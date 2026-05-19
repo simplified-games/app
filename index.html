@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simplified Workspace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS Styling --- */
+        /* --- Design Tokens & Variables --- */
         :root {
-            --primary: #4f46e5;
-            --primary-light: #e0e7ff;
-            --bg-color: #f8fafc;
-            --sidebar-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --bg-dark: #0b0f17;
+            --bg-card: #161b26;
+            --bg-card-hover: #1f2635;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            
+            /* App Icon Gradients */
+            --gradient-ai: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            --gradient-msg: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            --gradient-task: linear-gradient(135deg, #10b981, #059669);
+            --gradient-accent: linear-gradient(135deg, #3b82f6, #10b981);
         }
 
         * {
@@ -25,241 +30,297 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 24px;
+            overflow-x: hidden;
+            /* Subtle dark ambient glow mirroring the image */
+            background: radial-gradient(circle at top right, #1e1b4b 0%, #0b0f17 60%);
+        }
+
+        /* --- Top Navigation Bar --- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 40px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: rgba(11, 15, 23, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .brand {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .nav-menu {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .brand span {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .nav-btn {
-            width: 100%;
-            text-align: left;
-            background: none;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-btn:hover {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
-
-        .nav-btn.active {
-            background-color: var(--primary-light);
-            color: var(--primary);
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex-grow: 1;
-            padding: 40px;
-            position: relative;
-            overflow-y: auto;
-        }
-
-        /* Pages */
-        .page {
-            display: none; /* Hidden by default */
-            max-width: 900px;
-            margin: 0 auto;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .page.active {
-            display: block; /* Shown when active */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .page-title {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: var(--text-main);
-        }
-
-        /* Dashboard specific UI */
-        .prompt-container {
-            margin-top: 10vh;
-            text-align: center;
-        }
-
-        .prompt-title {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            color: var(--text-main);
-        }
-
-        .input-box {
-            background: white;
+        .search-bar {
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid var(--border-color);
+            padding: 8px 16px;
             border-radius: 99px;
-            padding: 8px 8px 8px 24px;
+            width: 320px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-bar:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .nav-right {
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: box-shadow 0.2s ease;
+            gap: 16px;
         }
 
-        .input-box:focus-within {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary);
-        }
-
-        .input-box input {
-            flex-grow: 1;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            color: var(--text-main);
-        }
-
-        .submit-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #3b82f6;
             border-radius: 50%;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
-        .submit-btn:hover {
-            background-color: #4338ca;
+        /* --- Hero Section --- */
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 80px 40px 40px 40px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
         }
 
-        /* Mock App Cards */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 6px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #10b981;
+            border-radius: 50%;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero-text p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 480px;
+        }
+
+        .explore-btn {
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 99px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .explore-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* --- Grid Layout for Apps --- */
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
 
         .app-card {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
+            background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
+        .app-card:hover {
+            background-color: var(--bg-card-hover);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .app-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: white;
+        }
+
+        .icon-ai { background: var(--gradient-ai); }
+        .icon-msg { background: var(--gradient-msg); }
+        .icon-task { background: var(--gradient-task); }
+
+        .app-info h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .app-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Custom Modal / Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: #2563eb;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive Breakpoint */
+        @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                padding: 40px 24px;
+                gap: 40px;
+            }
+            .hero-text h1 { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <header class="navbar">
         <div class="brand">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-            Simplified
+            Simplified <span>Workspace</span>
         </div>
+        <input type="text" class="search-bar" placeholder="Search apps...">
+        <div class="nav-right">
+            <div class="avatar">S</div>
+        </div>
+    </header>
+
+    <main class="hero-container">
         
-        <ul class="nav-menu">
-            <li><button class="nav-btn active" data-target="dashboard">✦ Assistant</button></li>
-            <li><button class="nav-btn" data-target="notes">📝 Notes App</button></li>
-            <li><button class="nav-btn" data-target="tasks">✓ Task Tracker</button></li>
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        
-        <section id="dashboard" class="page active">
-            <div class="prompt-container">
-                <h1 class="prompt-title">What are we building today?</h1>
-                <div class="input-box">
-                    <input type="text" placeholder="Start typing a command or idea...">
-                    <button class="submit-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-                    </button>
-                </div>
+        <section class="hero-text">
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                All systems online
             </div>
+            <h1>Welcome to Simplified Workspace</h1>
+            <p>Your streamlined productivity hub. Switch between specialized systems, coordinate team messages, and map out your development objectives seamlessly.</p>
+            <button class="explore-btn" onclick="document.getElementById('apps').scrollIntoView({behavior: 'smooth'})">Explore apps</button>
         </section>
 
-        <section id="notes" class="page">
-            <h2 class="page-title">Notes App</h2>
-            <div class="app-card" style="height: 400px;">
-                <textarea style="width: 100%; height: 100%; border: none; outline: none; resize: none; font-size: 1rem;" placeholder="Start typing your notes here..."></textarea>
-            </div>
-        </section>
-
-        <section id="tasks" class="page">
-            <h2 class="page-title">Task Tracker</h2>
-            <div class="app-grid">
-                <div class="app-card">
-                    <h3>To Do</h3>
-                    <p style="color: var(--text-muted); margin-top: 10px;">• Setup GitHub Pages</p>
-                    <p style="color: var(--text-muted); margin-top: 10px;">• Connect custom domain</p>
-                </div>
-                <div class="app-card">
-                    <h3>In Progress</h3>
-                    <p style="color: var(--text-muted); margin-top: 10px;">• Designing UI layout</p>
+        <section class="app-grid" id="apps">
+            
+            <div class="app-card" id="aiCard">
+                <div class="app-icon icon-ai">AI</div>
+                <div class="app-info">
+                    <h3>SimpleAI</h3>
+                    <p>Next-generation processing workspace assistant.</p>
                 </div>
             </div>
-        </section>
 
+            <a href="https://simplified-games.github.io/normsg/" class="app-card" target="_blank" rel="noopener noreferrer">
+                <div class="app-icon icon-msg">💬</div>
+                <div class="app-info">
+                    <h3>NorMSG</h3>
+                    <p>Unified structural workspace messaging client.</p>
+                </div>
+            </a>
+
+            <a href="https://simplified-games.github.io/Focus-by-Alex/" class="app-card" target="_blank" rel="noopener noreferrer">
+                <div class="app-icon icon-task">✓</div>
+                <div class="app-info">
+                    <h3>Focus</h3>
+                    <p>Track sprints, production builds, and tasks.</p>
+                </div>
+            </a>
+
+        </section>
     </main>
+
+    <div class="toast" id="comingSoonToast">✨ SimpleAI system is coming soon!</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const navButtons = document.querySelectorAll('.nav-btn');
-            const pages = document.querySelectorAll('.page');
+            const aiCard = document.getElementById('aiCard');
+            const toast = document.getElementById('comingSoonToast');
 
-            navButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // 1. Remove active class from all buttons and pages
-                    navButtons.forEach(b => b.classList.remove('active'));
-                    pages.forEach(p => p.classList.remove('active'));
-
-                    // 2. Add active class to clicked button
-                    btn.classList.add('active');
-
-                    // 3. Show the corresponding page
-                    const targetId = btn.getAttribute('data-target');
-                    document.getElementById(targetId).classList.add('active');
-                });
+            aiCard.addEventListener('click', () => {
+                toast.classList.add('show');
+                
+                // Automatically hide the notification after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
             });
         });
     </script>
