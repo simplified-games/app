@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplified Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Styling --- */
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --bg-color: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        /* Pages */
+        .page {
+            display: none; /* Hidden by default */
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block; /* Shown when active */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+
+        /* Dashboard specific UI */
+        .prompt-container {
+            margin-top: 10vh;
+            text-align: center;
+        }
+
+        .prompt-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--text-main);
+        }
+
+        .input-box {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 99px;
+            padding: 8px 8px 8px 24px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .input-box:focus-within {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .input-box input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #4338ca;
+        }
+
+        /* Mock App Cards */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .app-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            Simplified
+        </div>
+        
+        <ul class="nav-menu">
+            <li><button class="nav-btn active" data-target="dashboard">✦ Assistant</button></li>
+            <li><button class="nav-btn" data-target="notes">📝 Notes App</button></li>
+            <li><button class="nav-btn" data-target="tasks">✓ Task Tracker</button></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <section id="dashboard" class="page active">
+            <div class="prompt-container">
+                <h1 class="prompt-title">What are we building today?</h1>
+                <div class="input-box">
+                    <input type="text" placeholder="Start typing a command or idea...">
+                    <button class="submit-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="notes" class="page">
+            <h2 class="page-title">Notes App</h2>
+            <div class="app-card" style="height: 400px;">
+                <textarea style="width: 100%; height: 100%; border: none; outline: none; resize: none; font-size: 1rem;" placeholder="Start typing your notes here..."></textarea>
+            </div>
+        </section>
+
+        <section id="tasks" class="page">
+            <h2 class="page-title">Task Tracker</h2>
+            <div class="app-grid">
+                <div class="app-card">
+                    <h3>To Do</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">• Setup GitHub Pages</p>
+                    <p style="color: var(--text-muted); margin-top: 10px;">• Connect custom domain</p>
+                </div>
+                <div class="app-card">
+                    <h3>In Progress</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">• Designing UI layout</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const pages = document.querySelectorAll('.page');
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 1. Remove active class from all buttons and pages
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    pages.forEach(p => p.classList.remove('active'));
+
+                    // 2. Add active class to clicked button
+                    btn.classList.add('active');
+
+                    // 3. Show the corresponding page
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
