@@ -1,2 +1,2 @@
-# app
+# App
 The Simplified Workspace Website!
