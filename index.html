@@ -107,16 +107,22 @@
             font-size: 0.85rem;
         }
 
-        /* --- Hero Section --- */
+        /* --- Main Content Hero Area --- */
         .hero-container {
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
-            padding: 80px 40px 40px 40px;
+            padding: 60px 40px;
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 60px;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
             align-items: center;
+        }
+
+        .hero-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .status-badge {
@@ -140,19 +146,18 @@
         }
 
         .hero-text h1 {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             font-weight: 700;
-            line-height: 1.1;
+            line-height: 1.15;
             margin-bottom: 20px;
             letter-spacing: -1px;
         }
 
         .hero-text p {
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.6;
             margin-bottom: 32px;
-            max-width: 480px;
         }
 
         .explore-btn {
@@ -171,16 +176,15 @@
             transform: translateY(-2px);
         }
 
-        /* --- Grid Layout for Apps --- */
+        /* --- App Cards Display Grid --- */
         .app-grid-wrapper {
-            position: relative;
-            min-height: 250px;
+            width: 100%;
         }
 
         .app-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 16px;
         }
 
         .app-card {
@@ -194,9 +198,7 @@
             flex-direction: column;
             gap: 16px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            opacity: 1;
-            transform: scale(1);
+            transition: all 0.2s ease;
         }
 
         .app-card:hover {
@@ -205,8 +207,8 @@
             border-color: rgba(255, 255, 255, 0.15);
         }
 
-        /* State when hidden by search filter */
-        .app-card.hidden {
+        /* Used to hide search results cleanly */
+        .app-card.search-hidden {
             display: none !important;
         }
 
@@ -218,7 +220,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: white;
         }
 
@@ -227,27 +229,28 @@
         .icon-task { background: var(--gradient-task); }
 
         .app-info h3 {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .app-info p {
             color: var(--text-muted);
             font-size: 0.85rem;
+            line-height: 1.4;
         }
 
-        /* No Results Message */
+        /* No Results Fallback Message */
         .no-results {
             display: none;
             color: var(--text-muted);
             font-size: 1rem;
+            grid-column: span 2;
             text-align: center;
             padding: 40px 0;
-            grid-column: span 2;
         }
 
-        /* --- Custom Toast Notification --- */
+        /* --- Pop-up Toast --- */
         .toast {
             position: fixed;
             bottom: 32px;
@@ -261,6 +264,7 @@
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
         }
 
         .toast.show {
@@ -268,15 +272,18 @@
             opacity: 1;
         }
 
+        /* Media responsiveness adjustments */
         @media (max-width: 968px) {
             .hero-container {
                 grid-template-columns: 1fr;
                 padding: 40px 24px;
-                gap: 40px;
             }
-            .hero-text h1 { font-size: 2.5rem; }
-            .app-grid { grid-template-columns: 1fr; }
-            .no-results { grid-column: span 1; }
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+            .no-results {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
@@ -287,7 +294,7 @@
             Simplified <span>Workspace</span>
         </div>
         <div class="search-container">
-            <input type="text" id="appSearch" class="search-bar" placeholder="Search apps (e.g., AI, message, focus)...">
+            <input type="text" id="appSearch" class="search-bar" placeholder="Search apps (e.g., AI, msg, focus)...">
         </div>
         <div class="nav-right">
             <div class="avatar">S</div>
@@ -303,13 +310,13 @@
             </div>
             <h1>Welcome to Simplified Workspace</h1>
             <p>Your streamlined productivity hub. Switch between specialized systems, coordinate team messages, and map out your development objectives seamlessly.</p>
-            <button class="explore-btn" onclick="document.getElementById('appsSection').scrollIntoView({behavior: 'smooth'})">Explore apps</button>
+            <button class="explore-btn" onclick="document.getElementById('appGrid').scrollIntoView({behavior: 'smooth'})">Explore apps</button>
         </section>
 
-        <section class="app-grid-wrapper" id="appsSection">
+        <section class="app-grid-wrapper">
             <div class="app-grid" id="appGrid">
                 
-                <div class="app-card" id="aiCard" data-title="simpleai ai" data-desc="next-generation processing workspace assistant intelligence">
+                <div class="app-card" id="aiCard" data-search-keys="simpleai ai intelligence assistant chatbot assistant coming soon">
                     <div class="app-icon icon-ai">AI</div>
                     <div class="app-info">
                         <h3>SimpleAI</h3>
@@ -317,4 +324,72 @@
                     </div>
                 </div>
 
-                <a href
+                <a href="https://simplified-games.github.io/normsg/" class="app-card" target="_blank" rel="noopener noreferrer" data-search-keys="normsg client message messaging chat messenger text communication">
+                    <div class="app-icon icon-msg">💬</div>
+                    <div class="app-info">
+                        <h3>NorMSG</h3>
+                        <p>Unified structural workspace messaging client.</p>
+                    </div>
+                </a>
+
+                <a href="https://simplified-games.github.io/Focus-by-Alex/" class="app-card" target="_blank" rel="noopener noreferrer" data-search-keys="focus task tracker tracker todo tasks list sprints planning productivity alex">
+                    <div class="app-icon icon-task">✓</div>
+                    <div class="app-info">
+                        <h3>Focus</h3>
+                        <p>Track sprints, production builds, and tasks.</p>
+                    </div>
+                </a>
+
+                <div class="no-results" id="noResultsMessage">No matching tools or workspace apps found.</div>
+
+            </div>
+        </section>
+    </main>
+
+    <div class="toast" id="comingSoonToast">✨ SimpleAI system is coming soon!</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Coming Soon Popup handler
+            const aiCard = document.getElementById('aiCard');
+            const toast = document.getElementById('comingSoonToast');
+
+            aiCard.addEventListener('click', () => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            });
+
+            // Instant Live Grid Search Engine Component logic
+            const searchInput = document.getElementById('appSearch');
+            const appCards = document.querySelectorAll('.app-grid .app-card');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+
+            searchInput.addEventListener('input', (event) => {
+                const searchString = event.target.value.toLowerCase().trim();
+                let matchingElements = 0;
+
+                appCards.forEach(card => {
+                    const structuralKeywords = card.getAttribute('data-search-keys') || '';
+                    
+                    if (structuralKeywords.includes(searchString)) {
+                        card.classList.remove('search-hidden');
+                        matchingElements++;
+                    } else {
+                        card.classList.add('search-hidden');
+                    }
+                });
+
+                // Toggles hidden empty message banner wrapper if nothing matches keywords
+                if (matchingElements === 0) {
+                    noResultsMessage.style.display = 'block';
+                } else {
+                    noResultsMessage.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
