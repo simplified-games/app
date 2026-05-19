@@ -36,7 +36,6 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            /* Subtle dark ambient glow mirroring the image */
             background: radial-gradient(circle at top right, #1e1b4b 0%, #0b0f17 60%);
         }
 
@@ -67,6 +66,10 @@
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .search-container {
+            position: relative;
         }
 
         .search-bar {
@@ -169,6 +172,11 @@
         }
 
         /* --- Grid Layout for Apps --- */
+        .app-grid-wrapper {
+            position: relative;
+            min-height: 250px;
+        }
+
         .app-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -186,13 +194,20 @@
             flex-direction: column;
             gap: 16px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
+            opacity: 1;
+            transform: scale(1);
         }
 
         .app-card:hover {
             background-color: var(--bg-card-hover);
             transform: translateY(-4px);
             border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* State when hidden by search filter */
+        .app-card.hidden {
+            display: none !important;
         }
 
         .app-icon {
@@ -222,7 +237,17 @@
             font-size: 0.85rem;
         }
 
-        /* Custom Modal / Notification Toast */
+        /* No Results Message */
+        .no-results {
+            display: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-align: center;
+            padding: 40px 0;
+            grid-column: span 2;
+        }
+
+        /* --- Custom Toast Notification --- */
         .toast {
             position: fixed;
             bottom: 32px;
@@ -243,7 +268,6 @@
             opacity: 1;
         }
 
-        /* Responsive Breakpoint */
         @media (max-width: 968px) {
             .hero-container {
                 grid-template-columns: 1fr;
@@ -251,6 +275,8 @@
                 gap: 40px;
             }
             .hero-text h1 { font-size: 2.5rem; }
+            .app-grid { grid-template-columns: 1fr; }
+            .no-results { grid-column: span 1; }
         }
     </style>
 </head>
@@ -260,7 +286,9 @@
         <div class="brand">
             Simplified <span>Workspace</span>
         </div>
-        <input type="text" class="search-bar" placeholder="Search apps...">
+        <div class="search-container">
+            <input type="text" id="appSearch" class="search-bar" placeholder="Search apps (e.g., AI, message, focus)...">
+        </div>
         <div class="nav-right">
             <div class="avatar">S</div>
         </div>
@@ -275,54 +303,18 @@
             </div>
             <h1>Welcome to Simplified Workspace</h1>
             <p>Your streamlined productivity hub. Switch between specialized systems, coordinate team messages, and map out your development objectives seamlessly.</p>
-            <button class="explore-btn" onclick="document.getElementById('apps').scrollIntoView({behavior: 'smooth'})">Explore apps</button>
+            <button class="explore-btn" onclick="document.getElementById('appsSection').scrollIntoView({behavior: 'smooth'})">Explore apps</button>
         </section>
 
-        <section class="app-grid" id="apps">
-            
-            <div class="app-card" id="aiCard">
-                <div class="app-icon icon-ai">AI</div>
-                <div class="app-info">
-                    <h3>SimpleAI</h3>
-                    <p>Next-generation processing workspace assistant.</p>
-                </div>
-            </div>
-
-            <a href="https://simplified-games.github.io/normsg/" class="app-card" target="_blank" rel="noopener noreferrer">
-                <div class="app-icon icon-msg">💬</div>
-                <div class="app-info">
-                    <h3>NorMSG</h3>
-                    <p>Unified structural workspace messaging client.</p>
-                </div>
-            </a>
-
-            <a href="https://simplified-games.github.io/Focus-by-Alex/" class="app-card" target="_blank" rel="noopener noreferrer">
-                <div class="app-icon icon-task">✓</div>
-                <div class="app-info">
-                    <h3>Focus</h3>
-                    <p>Track sprints, production builds, and tasks.</p>
-                </div>
-            </a>
-
-        </section>
-    </main>
-
-    <div class="toast" id="comingSoonToast">✨ SimpleAI system is coming soon!</div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const aiCard = document.getElementById('aiCard');
-            const toast = document.getElementById('comingSoonToast');
-
-            aiCard.addEventListener('click', () => {
-                toast.classList.add('show');
+        <section class="app-grid-wrapper" id="appsSection">
+            <div class="app-grid" id="appGrid">
                 
-                // Automatically hide the notification after 3 seconds
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            });
-        });
-    </script>
-</body>
-</html>
+                <div class="app-card" id="aiCard" data-title="simpleai ai" data-desc="next-generation processing workspace assistant intelligence">
+                    <div class="app-icon icon-ai">AI</div>
+                    <div class="app-info">
+                        <h3>SimpleAI</h3>
+                        <p>Next-generation processing workspace assistant.</p>
+                    </div>
+                </div>
+
+                <a href
