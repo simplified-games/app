@@ -15,10 +15,9 @@
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.08);
             
-            /* App Icon Gradients */
+            /* App Icon Gradients & Settings */
             --gradient-ai: linear-gradient(135deg, #ff6b6b, #ff8e53);
-            --gradient-msg: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            --gradient-task: linear-gradient(135deg, #10b981, #059669);
+            --bg-icon-fallback: #1e293b;
             --gradient-accent: linear-gradient(135deg, #3b82f6, #10b981);
         }
 
@@ -207,11 +206,11 @@
             border-color: rgba(255, 255, 255, 0.15);
         }
 
-        /* Used to hide search results cleanly */
         .app-card.search-hidden {
             display: none !important;
         }
 
+        /* Flex wrap container for icons */
         .app-icon {
             width: 44px;
             height: 44px;
@@ -219,14 +218,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            background-color: var(--bg-icon-fallback);
+        }
+
+        /* Dedicated favicon styles */
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px; /* Soft framing padding around standard sizes */
+        }
+
+        .icon-ai { 
+            background: var(--gradient-ai); 
             font-weight: 700;
             font-size: 1rem;
             color: white;
         }
-
-        .icon-ai { background: var(--gradient-ai); }
-        .icon-msg { background: var(--gradient-msg); }
-        .icon-task { background: var(--gradient-task); }
 
         .app-info h3 {
             font-size: 1.1rem;
@@ -272,7 +281,6 @@
             opacity: 1;
         }
 
-        /* Media responsiveness adjustments */
         @media (max-width: 968px) {
             .hero-container {
                 grid-template-columns: 1fr;
@@ -325,7 +333,9 @@
                 </div>
 
                 <a href="https://simplified-games.github.io/normsg/" class="app-card" target="_blank" rel="noopener noreferrer" data-search-keys="normsg client message messaging chat messenger text communication">
-                    <div class="app-icon icon-msg">💬</div>
+                    <div class="app-icon">
+                        <img src="https://simplified-games.github.io/normsg/favicon.ico" alt="NorMSG" onerror="this.style.display='none'; this.parentElement.innerText='💬'">
+                    </div>
                     <div class="app-info">
                         <h3>NorMSG</h3>
                         <p>Unified structural workspace messaging client.</p>
@@ -333,7 +343,9 @@
                 </a>
 
                 <a href="https://simplified-games.github.io/Focus-by-Alex/" class="app-card" target="_blank" rel="noopener noreferrer" data-search-keys="focus task tracker tracker todo tasks list sprints planning productivity alex">
-                    <div class="app-icon icon-task">✓</div>
+                    <div class="app-icon">
+                        <img src="https://simplified-games.github.io/Focus-by-Alex/favicon.ico" alt="Focus" onerror="this.style.display='none'; this.parentElement.innerText='✓'">
+                    </div>
                     <div class="app-info">
                         <h3>Focus</h3>
                         <p>Track sprints, production builds, and tasks.</p>
@@ -382,7 +394,6 @@
                     }
                 });
 
-                // Toggles hidden empty message banner wrapper if nothing matches keywords
                 if (matchingElements === 0) {
                     noResultsMessage.style.display = 'block';
                 } else {
